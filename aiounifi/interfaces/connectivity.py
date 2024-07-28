@@ -66,11 +66,14 @@ class Connectivity:
             "rememberMe": True,
         }
 
-        response, bytes_data = await self._request("post", url, json=auth)
+        response, bytes_data = await self._request("post", url, json=auth))
+
+        if response.status == HTTPStatus.TOO_MANY_REQUESTS:
+            raise ResponseError(f"Login Failed: Too many requests: {bytes_data!r}") 
 
         if response.content_type != "application/json":
             LOGGER.debug("Login Failed not JSON: '%s'", bytes_data)
-            raise RequestError("Login Failed: Host starting up")
+            raise RequestError("Login Failed: Host starting up"   
 
         data: TypedApiResponse = orjson.loads(bytes_data)
         if data.get("meta", {}).get("rc") == "error":
